@@ -1,0 +1,83 @@
+<?php
+session_start();
+
+// Establecer una variable de sesión cuando el usuario pasa por aquí
+$_SESSION['access_granted'] = true;
+
+// Guardar el tiempo actual para controlar la inactividad
+$_SESSION['last_activity'] = time();
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script type='text/javascript' src='//supersedeasserted.com/7d/83/dc/7d83dc1b34569128d435554351be61b1.js'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Plus Películas</title>
+    <style>
+        /* Estilos para el tema oscuro */
+        body {
+            background-color: #000;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #3AB745;
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .app-cover {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+        }
+
+        .app-description {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .enter-button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #FF0000;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .enter-button:hover {
+            background-color: #3AB745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenido a Dark Plus Películas</h1>
+        <img class="app-cover" src="https://i.ibb.co/WDxmx8s/LOGO-1713460353834-removebg-preview.png" alt="Portada de la aplicación">
+        <p class="app-description">Dark Plus es una aplicación genial para descubrir nuevas películas, ver películas gratis y leer reseñas. Sumérgete en el mundo del cine y disfruta de una experiencia única.</p>
+        <a class="enter-button" href="/peliculas.html">Ver películas</a>
+        <a class="enter-button" href="/tv/index.php">Ver futbol</a>
+    </div>
+    <!-- Scripts opcionales -->
+    <!-- Agrega aquí tus scripts opcionales, como bibliotecas de JavaScript -->
+</body>
+</html>
