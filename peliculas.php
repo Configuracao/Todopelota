@@ -1,0 +1,377 @@
+<?php
+session_start();
+
+// Si no se ha accedido a 'index.php', redirigir a 'index.php'
+if (!isset($_SESSION['access_granted']) || $_SESSION['access_granted'] !== true) {
+    header("Location: index.php");
+    exit;
+}
+
+// Verificar inactividad (30 minutos = 1800 segundos)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+    // Si han pasado más de 30 minutos de inactividad, redirigir a 'index.php'
+    session_unset();
+    session_destroy();
+    header("Location: index.php");
+    exit;
+}
+
+// Actualizar el tiempo de actividad
+$_SESSION['last_activity'] = time();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <style>
+    .tabs .tab a:focus, .tabs .tab a:focus.active { background: none; }
+    .col img { aspect-ratio: 2 / 3; width: 100%; border-radius: 5px; margin-bottom: 5px; }
+    .padDrew { padding: 10px 0; margin: 50px 0; }
+    .sidenav li { transition: background ease .2s; }
+    .row .col { padding: 0 5px; }
+    .each-category { padding: 0 5px; }
+    .sidenav li > a { margin: 0 10px; background: #212121; color: rgb(222, 215, 215); border-radius: 3px; display: flex; align-items: center; gap: 10px; padding: 0 10px; }
+    #nav-mobile a.active-sidenav, .sidenav li > a.active-sidenav { background: rgba(60, 128, 85, .2); color: #20bf6b; }
+    #nav-mobile a { font-weight: 600; }
+    .buscador { float: right; margin: 0 18px; z-index: 1; }
+    @media screen and (min-width: 991px) { nav .brand-logo { margin: 0 10px; } }
+    @media only screen and (max-width: 992px) { nav .brand-logo { left: 110px; } }
+    .tab a, .sidenav li a { font-weight: 600; }
+    img.circle { border-radius: 100%; overflow: hidden; }
+    .banner { display: flex; gap: 10px; padding: 10px; background: rgb(20, 20, 20); }
+    .sidenav li { line-height: 0; }
+    * { list-style-type: none; }
+
+    .showMoreButton {
+      position: fixed;
+      bottom: 20px; /* Ajusta el valor según sea necesario */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ff4500;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .showMoreButton:hover {
+      background-color: #ff5e00;
+    }
+
+    /* Estilos para el campo de búsqueda */
+    #search-input {
+        padding: 2px;
+        width: 200px;
+        height: 25px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        font-size: 16px;
+        display: none; /* Ocultar el campo de búsqueda inicialmente */
+        float: right; /* Posicionar a la derecha */
+    }
+
+    /* Estilos para el ícono de búsqueda */
+    #search-icon {
+        cursor: pointer;
+        float: right; /* Posicionar a la derecha */
+        margin-right: 10px; /* Añadir margen derecho */
+    }
+    
+    .tabs .tab a {
+  outline: none; /* Evita el borde azul predeterminado al enfocar */
+}
+
+.tabs .tab a:focus {
+  background: rgba(60, 128, 85, .2); /* Color de fondo al enfocar */
+}
+</style>
+</head>
+<body class="grey darken-4">
+<div class="navbar-fixed">
+<nav class="nav-extended black">
+<div class="nav-wrapper">
+<a href="#" class="brand-logo">Peliculas</a>
+<a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+<ul id="nav-mobile" class="right hide-on-med-and-down">
+<li><a href="#TAG1" class="active-sidenav">Películas</a></li>
+<li><a href="#TAG2">Series</a></li>
+</ul>
+  <!-- Search input field -->
+  <div id="search-container">
+    <i class="material-icons" id="search-icon">search</i>
+    <input type="text" id="search-input" placeholder="Buscar películas" class="hidden">
+  </div>
+</div>
+
+<!-- Agrega esta sección dentro del <nav> o en otro lugar adecuado -->
+<div class="nav-content">
+  <ul class="tabs tabs-transparent">
+  <li class="tab" tabindex="0"><a href="#all">Todas</a></li>
+<li class="tab" tabindex="0"><a href="#action">Acción</a></li>
+<li class="tab" tabindex="0"><a href="#comedy">Comedia</a></li>
+    <!-- Más géneros serán añadidos aquí -->
+  </ul>
+</div>
+</nav>
+</div>
+
+<ul class="sidenav grey darken-4" id="mobile-demo">
+<li class="row banner">
+<div class="col s4">
+<img src="https://i.ibb.co/WDxmx8s/LOGO-1713460353834-removebg-preview.png" alt="" class="responsive-img circle">
+</div>
+<div class="col s8">
+<h4 class="white-text">Dark Plus!</h4>
+</div>
+</li>
+<li><a class="active-sidenav" href="#TAG1"><span class="material-icons">movie</span> Películas</a></li>
+<li><a class="" href="favoritos.html"><span class="material-icons">favorite</span> Favoritos</a></li>
+<li><a class="" href="sms.html"><span class="material-icons">telegram</span> Reportar o pedir</a></li>
+</ul>
+
+<div class="each-category">
+
+<!--INICIO DE SECCION TAG1-->
+<div id="TAG1" class="row padDrew">
+  <!-- Movies container -->
+  <div class="movies-container" id="movies">
+    <div class="movie-column" id="left-column"></div>
+    <div class="movie-column" id="right-column"></div>
+  </div>
+  <script>
+    let movies = [];
+let genres = [];
+
+// Función para cargar las películas desde el archivo JSON
+async function loadMovies() {
+  try {
+    const response = await fetch('movies.json');
+    const data = await response.json();
+    
+    if (JSON.stringify(data) !== JSON.stringify(movies)) {
+      movies = data;
+      generateGenres();
+      displayMovies();
+    }
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+  }
+}
+
+function generateGenres() {
+  const genresSet = new Set();
+
+  movies.forEach(movie => {
+    if (movie.genre) {
+      movie.genre.split(',').forEach(genre => genresSet.add(genre.trim()));
+    }
+  });
+
+  genres = Array.from(genresSet);
+
+  const tabsContainer = document.querySelector('.nav-content .tabs');
+  tabsContainer.innerHTML = ''; // Limpiar géneros anteriores
+
+  // Agregar el tab "Todas"
+  const allTab = document.createElement('li');
+  allTab.classList.add('tab');
+  allTab.innerHTML = `<a href="#all" tabindex="0">Todas</a>`;
+  tabsContainer.appendChild(allTab);
+
+  // Agregar los tabs de género
+  genres.forEach(genre => {
+    const li = document.createElement('li');
+    li.classList.add('tab');
+    li.innerHTML = `<a href="#${genre.replace(/\s+/g, '-')}" tabindex="0">${genre}</a>`;
+    tabsContainer.appendChild(li);
+  });
+
+  // Event listener para los tabs de género
+  document.querySelectorAll('.nav-content .tabs .tab a').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const genre = tab.textContent.trim();
+      displayMoviesByGenre(genre);
+    });
+  });
+}
+
+function displayMovies() {
+  const leftColumn = document.getElementById('left-column');
+  const rightColumn = document.getElementById('right-column');
+
+  leftColumn.innerHTML = '';
+  rightColumn.innerHTML = '';
+
+  movies.forEach((movie, index) => {
+    const movieElement = document.createElement('div');
+    movieElement.classList.add('movie');
+    movieElement.innerHTML = `
+      <li><a href="entrada.php?id=${movie.id}" class="col s4 m3 l2">
+        <img src="${movie.poster}" alt="${movie.title}"></a></li>
+    `;
+
+    if (index % 2 === 0) {
+      leftColumn.appendChild(movieElement);
+    } else {
+      rightColumn.appendChild(movieElement);
+    }
+  });
+
+  // Oculta el botón "Ver más"
+  const showMoreButton = document.getElementById('showMoreButton');
+  if (showMoreButton) {
+    showMoreButton.style.display = 'none';
+  }
+}
+
+function displayMoviesByGenre(genre) {
+  let filteredMovies;
+
+  if (genre === 'Todas') {
+    filteredMovies = movies;
+  } else {
+    filteredMovies = movies.filter(movie =>
+      movie.genre && movie.genre.split(',').map(g => g.trim()).includes(genre)
+    );
+  }
+
+  const leftColumn = document.getElementById('left-column');
+  const rightColumn = document.getElementById('right-column');
+  leftColumn.innerHTML = '';
+  rightColumn.innerHTML = '';
+
+  filteredMovies.forEach((movie, index) => {
+    const movieElement = document.createElement('div');
+    movieElement.classList.add('movie');
+    movieElement.innerHTML = `
+      <li><a href="entrada.php?id=${movie.id}" class="col s4 m3 l2">
+        <img src="${movie.poster}" alt="${movie.title}"></a></li>
+    `;
+
+    if (index % 2 === 0) {
+      leftColumn.appendChild(movieElement);
+    } else {
+      rightColumn.appendChild(movieElement);
+    }
+  });
+}
+
+// Carga las películas cuando la página se carga
+document.addEventListener('DOMContentLoaded', () => {
+  loadMovies();
+
+  // Configura un intervalo para actualizar las películas cada 30 segundos (10000 ms)
+  setInterval(() => {
+    loadMovies(); // Actualiza la lista de películas sin añadir más
+  }, 10000);
+
+  // Inicializa el sidenav
+  const elems = document.querySelectorAll('.sidenav');
+  M.Sidenav.init(elems);
+
+  // Mostrar y ocultar el campo de búsqueda
+  document.getElementById('search-icon').addEventListener('click', function () {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput.style.display === 'none' || searchInput.style.display === '') {
+      searchInput.style.display = 'inline-block';
+    } else {
+      searchInput.style.display = 'none';
+    }
+  });
+
+  // Filtrar películas en el campo de búsqueda
+  document.getElementById('search-input').addEventListener('input', function () {
+    const query = this.value.toLowerCase();
+    const filteredMovies = movies.filter(movie =>
+      movie.title.toLowerCase().includes(query)
+    );
+
+    const leftColumn = document.getElementById('left-column');
+    const rightColumn = document.getElementById('right-column');
+    leftColumn.innerHTML = '';
+    rightColumn.innerHTML = '';
+
+    filteredMovies.forEach((movie, index) => {
+      const movieElement = document.createElement('div');
+      movieElement.classList.add('movie');
+      movieElement.innerHTML = `
+        <li><a href="/entrada.php?id=${movie.id}" class="col s4 m3 l2">
+          <img src="${movie.poster}" alt="${movie.title}"></a></li>
+      `;
+
+      if (index % 2 === 0) {
+        leftColumn.appendChild(movieElement);
+      } else {
+        rightColumn.appendChild(movieElement);
+      }
+    });
+  });
+
+  // Manejo de teclado para navegación entre tabs
+  document.addEventListener('keydown', (event) => {
+    const key = event.key;
+
+    if (key === 'ArrowRight') {
+      const activeTab = document.querySelector('.nav-content .tabs .tab a.active');
+      const nextTab = activeTab ? activeTab.parentElement.nextElementSibling : null;
+      if (nextTab) {
+        nextTab.querySelector('a').focus();
+        nextTab.querySelector('a').click();
+      }
+    } else if (key === 'ArrowLeft') {
+      const activeTab = document.querySelector('.nav-content .tabs .tab a.active');
+      const prevTab = activeTab ? activeTab.parentElement.previousElementSibling : null;
+      if (prevTab) {
+        prevTab.querySelector('a').focus();
+        prevTab.querySelector('a').click();
+      }
+    }
+  });
+});
+  </script>
+</div>
+
+<!--Import jQuery before materialize.js-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+  // Initialize the sidenav
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(elems);
+  });
+</script>
+<script>
+// Tiempo de inactividad en milisegundos (30 minutos)
+const inactivityTime = 30 * 60 * 1000;
+let inactivityTimer;
+
+function resetTimer() {
+    // Reiniciar el temporizador de inactividad
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+        // Redirigir a index.php después de 30 minutos de inactividad
+        window.location.href = 'index.php';
+    }, inactivityTime);
+}
+
+// Detectar actividad del usuario
+window.onload = resetTimer;
+window.onmousemove = resetTimer;
+window.onkeypress = resetTimer;
+window.onscroll = resetTimer;
+</script>
+</body>
+</html>

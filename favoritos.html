@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Import Google Icon Font -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<style>
+  .tabs .tab a:focus, .tabs .tab a:focus.active { background: none; }
+  .col img { aspect-ratio: 2 / 3; width: 100%; border-radius: 5px; margin-bottom: 5px; }
+  .padDrew { padding: 10px 0; margin: 50px 0; }
+  .sidenav li { transition: background ease .2s; }
+  .row .col { padding: 0 5px; }
+  .each-category { padding: 0 5px; }
+  .sidenav li > a { margin: 0 10px; background: #212121; color: rgb(222, 215, 215); border-radius: 3px; display: flex; align-items: center; gap: 10px; padding: 0 10px; }
+  #nav-mobile a.active-sidenav, .sidenav li > a.active-sidenav { background: rgba(60, 128, 85, .2); color: #20bf6b; }
+  #nav-mobile a { font-weight: 600; }
+  .buscador { float: right; margin: 0 18px; z-index: 1; }
+  @media screen and (min-width: 991px) { nav .brand-logo { margin: 0 10px; } }
+  @media only screen and (max-width: 992px) { nav .brand-logo { left: 110px; } }
+  .tab a, .sidenav li a { font-weight: 600; }
+  img.circle { border-radius: 100%; overflow: hidden; }
+  .banner { display: flex; gap: 10px; padding: 10px; background: rgb(20, 20, 20); }
+  .sidenav li { line-height: 0; }
+  * { list-style-type: none; }
+
+  /* Estilos para el campo de búsqueda */
+  #search-input {
+      padding: 2px;
+      width: 200px;
+      height: 25px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      font-size: 16px;
+      display: none; /* Ocultar el campo de búsqueda inicialmente */
+      float: right; /* Posicionar a la derecha */
+  }
+
+  /* Estilos para el ícono de búsqueda */
+  #search-icon {
+      cursor: pointer;
+      float: right; /* Posicionar a la derecha */
+      margin-right: 10px; /* Añadir margen derecho */
+  }
+</style>
+<title>Pelis Home - FlixThemes</title>
+</head>
+<body class="grey darken-4">
+<div class="navbar-fixed">
+<nav class="nav-extended black">
+<div class="nav-wrapper">
+<a href="go:pelicula" class="brand-logo">Favoritos</a>
+<a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+<ul id="nav-mobile" class="right hide-on-med-and-down">
+<li><a href="#!" class="active-sidenav">Películas</a></li>
+<li><a href="go:seriehome">Series</a></li>
+<li><a href="#!">Novelas</a></li>
+</ul>
+
+<div class="nav-content">
+<ul class="tabs tabs-transparent">
+<li class="tab"><a href="#favoritos" class="active">Favoritos</a></li>
+</ul>
+</div>
+</nav>
+</div>
+
+<ul class="sidenav grey darken-4" id="mobile-demo">
+<li class="row banner">
+<div class="col s4">
+<img src="https://i.ibb.co/WDxmx8s/LOGO-1713460353834-removebg-preview.png" alt="" class="responsive-img circle">
+</div>
+<div class="col s8">
+<h4 class="white-text">Dark Plus!</h4>
+</div>
+</li>
+<li><a class="active-sidenav" href="peliculas. php"><span class="material-icons">movie</span> Películas</a></li>
+<li><a class="" href="favoritos.html"><span class="material-icons">favorite</span> Favoritos</a></li>
+<li><a class="" href="sms.html"><span class="material-icons">telegram</span> Reportar o pedir</a></li>
+</ul>
+
+<div class="each-category">
+
+<!--INICIO DE SECCION TAG1-->
+<div id="favoritos" class="row padDrew">
+  <!-- Movies container -->
+  <div class="movies-container" id="favoritos-movies"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Obtener las películas favoritas almacenadas en localStorage
+    const favoritesString = localStorage.getItem('favorites');
+    const favorites = favoritesString ? JSON.parse(favoritesString) : [];
+
+    // Crear un array para almacenar los detalles completos de las películas favoritas
+    const favoriteMoviesDetails = [];
+
+    // Hacer una solicitud a la API de TMDb para obtener los detalles completos de cada película favorita
+    const apiKey = '474da9d11a305cc829f96e5b2295f0d4'; // Reemplaza 'TU_API_KEY' con tu clave de API de TMDb
+
+    const requests = favorites.map(movieId => {
+        const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=es`;
+        return fetch(apiUrl).then(response => response.json());
+    });
+
+    // Esperar a que todas las solicitudes se completen
+    Promise.all(requests)
+        .then(dataArray => {
+            // Guardar los detalles completos de las películas favoritas en el nuevo array
+            favoriteMoviesDetails.push(...dataArray);
+
+            // Mostrar las películas favoritas
+            const favoritosMoviesContainer = document.getElementById('favoritos-movies');
+            favoritosMoviesContainer.innerHTML = ''; // Limpiar el contenedor
+            favoriteMoviesDetails.forEach(movie => {
+                const movieElement = document.createElement('div');
+                movieElement.classList.add('movie');
+                const posterUrl = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;
+                movieElement.innerHTML = `
+                    <li>
+                        <a href="https://pelistart.42web.io/peli/entrada2.php?id=${movie.id}" class="col s4 m3 l2">
+                            <img src="${posterUrl}" alt="poster">
+                        </a>
+                    </li>
+                `;
+                favoritosMoviesContainer.appendChild(movieElement);
+            });
+        })
+        .catch(error => console.error('Error al cargar los detalles de las películas favoritas:', error));
+});
+</script>
+
+</div>
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+M.AutoInit();
+</script>
+
+</body>
+</html>
