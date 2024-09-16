@@ -195,7 +195,7 @@ function displayMovies() {
     const movieElement = document.createElement('div');
     movieElement.classList.add('movie');
     movieElement.innerHTML = `
-      <li><a href="entrada2.php?id=${movie.id}" class="col s4 m3 l2">
+      <li><a href="entrada2.html?id=${movie.id}" class="col s4 m3 l2">
         <img src="${movie.poster}" alt="${movie.title}"></a></li>
     `;
 
@@ -233,7 +233,7 @@ function displayMoviesByGenre(genre) {
     const movieElement = document.createElement('div');
     movieElement.classList.add('movie');
     movieElement.innerHTML = `
-      <li><a href="entrada2.php?id=${movie.id}" class="col s4 m3 l2">
+      <li><a href="entrada2.html?id=${movie.id}" class="col s4 m3 l2">
         <img src="${movie.poster}" alt="${movie.title}"></a></li>
     `;
 
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const movieElement = document.createElement('div');
       movieElement.classList.add('movie');
       movieElement.innerHTML = `
-        <li><a href="entrada2.php?id=${movie.id}" class="col s4 m3 l2">
+        <li><a href="entrada2.html?id=${movie.id}" class="col s4 m3 l2">
           <img src="${movie.poster}" alt="${movie.title}"></a></li>
       `;
 
