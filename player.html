@@ -1,0 +1,98 @@
+<html>
+<head>
+  <title>JWPlayer Video Loader</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jwplayer.com/libraries/XXXXXXX.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #player {
+      width: 90%; /* Adjust as needed for mobile */
+      max-width: 800px; /* Maximum width */
+      margin: 20px;
+    }
+
+    #urlForm {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #urlInput {
+      padding: 10px;
+      width: 70%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #loadButton {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <div id="urlForm">
+      <input type="text" id="urlInput" placeholder="Enter video URL">
+      <button id="loadButton">Load Video</button>
+    </div>
+
+    <div id="player"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const playerDiv = document.getElementById('player');
+      const urlInput = document.getElementById('urlInput');
+      const loadButton = document.getElementById('loadButton');
+
+      loadButton.addEventListener('click', function() {
+        const videoUrl = urlInput.value;
+
+        if (!videoUrl) {
+          alert('Please enter a video URL.');
+          return;
+        }
+
+        // Fetch the JSON data from the PHP script
+        fetch(`api.php?url=${encodeURIComponent(videoUrl)}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.link) {
+              // Initialize JWPlayer with the retrieved link
+              jwplayer("player").setup({
+                file: data.link,
+                width: "100%",
+                aspectratio: "16:9",
+                visualplaylist: false,
+              });
+            } else {
+              alert('No video link found for the provided URL.');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching video link:', error);
+            alert('Failed to load video. Please check the URL and try again.');
+          });
+      });
+    });
+  </script>
+
+</body>
+</html>
