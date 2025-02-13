@@ -1,30 +1,56 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/vnd.apple.mpegurl");
+error_reporting(E_ERROR | E_PARSE);
 
-$streamUrl = "http://cukuyx.dh01ddfddf.xyz/live/cyx_93531158996778016_480p.m3u8";
+// Recibe la URL completa desde el parámetro 'v'
+$filelink = htmlspecialchars($_GET['url'], ENT_QUOTES, 'UTF-8');
+$link = '';
 
-$headers = [
-    "User-Agent: Ranger/4.5.2-f8cfa536",
-    "App: com.msandroid.mobile",
-    "App-Version: 50710",
-    "Content-Auth: spared_addr=http://cukuyx.dh01ddfddf.xyz/v3/youshi/&app_id=magmob&user_id=673818360&media_encrypted=0&client_ip=2803:1800:401f:a48a:7c31:66ff:fef9:9396&dev_id=36b5741b&link=cf&session_id=wSxrjVHqpD2n&sign_type=cfl&auth_id=673818360_magmob__0&app_ver=50710&main_addr=http://cukuyx.dh01ddfddf.xyz/v3/youshi/&expired=1739139206&tag=8B645F&check_play_ip=true&token=0C5A450A84EA9029312ADCC7C581F915&sign2_method=sign_o3&instance=0&start_moment=1739129320790&sign2=e364a3845bb86ef3e81734277a58aea0",
-    "Content-License: app_id=magmob&tag=8B645F&scheme=md5-01&media_code=cyx_93531158996778016_480p&expired=1739559007&token=0EEFCB735AC1AD83DFC188B1BFDC3EB3",
-];
+// Verifica si la URL pertenece a filemoon.sx, streamwish.to o playerwish.com
+if (!empty($filelink) && (strpos($filelink, "supervideo.cc") !== false || 
+                          strpos($filelink, "streamwish.to") !== false || 
+                          strpos($filelink, "fastbrisk.com") !== false || 
+                          strpos($filelink, "swishsrv.com") !== false || 
+                          strpos($filelink, "playerwish.com") !== false || 
+                          strpos($filelink, "filemooon.link") !== false || 
+                          strpos($filelink, "filegram.to") !== false || 
+                          strpos($filelink, "listeamed.net") !== false || 
+                          strpos($filelink, "iplayerhls.com") !== false || 
+                          strpos($filelink, "powstreem.info") !== false || 
+                          strpos($filelink, "jwplayerhls.com") !== false)) {
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $streamUrl);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-$response = curl_exec($ch);
-curl_close($ch);
+    require_once("JavaScriptUnpacker.php");
+    require_once("tear.php");
 
-if ($response) {
-    // Reemplazar los enlaces de los segmentos para que pasen por el proxy
-    $response = preg_replace_callback('/(http[^\s]+\.ts)/', function ($matches) {
-        return "https://pelistart.free.nf/proxy.php?url=" . urlencode($matches[1]);
-    }, $response);
+    $ua = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36";
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $filelink);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, $ua);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_ENCODING, "");
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 25);
+    
+    $h = curl_exec($ch);
+    
+    if (curl_errno($ch)) {
+        error_log('cURL Error: ' . curl_error($ch));
+    }
+    
+    curl_close($ch);
+
+    $out = "";
+    if (preg_match("/eval\(function\(p,a,c,k,e,[r|d]?/",$h)) {
+        $jsu = new JavaScriptUnpacker();
+        $out = $jsu->Unpack($h);
+    }
+
+    if (preg_match("/sources\:\[\{file\:\"([^\"]+)\"/",$out,$m)) {
+        $link = $m[1];
+    }
 }
 
-echo $response;
-?>
+header('Content-Type: application/json');
+echo json_encode(['link' => $link]);
