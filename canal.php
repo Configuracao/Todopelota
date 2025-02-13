@@ -6,7 +6,7 @@ $filelink = htmlspecialchars($_GET['url'], ENT_QUOTES, 'UTF-8');
 $link = '';
 
 // Verifica si la URL pertenece a filemoon.sx, streamwish.to o playerwish.com
-if (!empty($filelink) && (strpos($filelink, "supervideo.cc") !== false || 
+if (!empty($filelink) && (strpos($filelink, "dhtpre.com") !== false || 
                           strpos($filelink, "streamwish.to") !== false || 
                           strpos($filelink, "fastbrisk.com") !== false || 
                           strpos($filelink, "swishsrv.com") !== false || 
@@ -15,7 +15,6 @@ if (!empty($filelink) && (strpos($filelink, "supervideo.cc") !== false ||
                           strpos($filelink, "filegram.to") !== false || 
                           strpos($filelink, "listeamed.net") !== false || 
                           strpos($filelink, "iplayerhls.com") !== false || 
-                          strpos($filelink, "powstreem.info") !== false || 
                           strpos($filelink, "jwplayerhls.com") !== false)) {
 
     require_once("JavaScriptUnpacker.php");
