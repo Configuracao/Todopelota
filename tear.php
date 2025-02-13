@@ -1,363 +1,342 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Fcloud Stream</title>
-    <meta name="robots" content="noindex">
-    <meta name="referrer" content="never">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://cdn.rawgit.com/ufilestorage/a/master/skins/jw-logo-bar.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://content.jwplatform.com/libraries/KB5zFt7A.js"></script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
+<?php
+/* see https://playtube.ws/js/tear.js */
+function uRShift($a, $b)
+{
+    $z = hexdec(80000000);
+    if($z & $a)
+    {
+        $a = ($a >> 1);
+        $a &= (~$z);
+        $a |= 0x40000000;
+        $a = ($a >> ($b - 1));
+    } else {
+        $a = ($a >> $b);
+    }
+    return $a;
+}
 
-        #uplay_player {
-            position: absolute;
-            width: 100% !important;
-            height: 100% !important;
-            border: none;
-            overflow: hidden;
-        }
+function ascii2binary($a0) {
+    return bytes2blocks(ascii2bytes($a0));
+}
 
-        .jw-reset,
-        .jw-reset-text,
-        .jw-text {
-            font-family: 'Poppins', sans-serif !important;
-            font-style: normal !important;
+function ascii2bytes($bb) {
+    $x = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    $a2b = array();
+    for($k = 0; $k < strlen($x); $k++) {
+        $a2b[$x[$k]] = $k;
+    }
+    $a2 = 0;
+    $a6 = -(1);
+    $a7 = strlen($bb);
+    $a9 = 0;
+    $a8 = Array();
+    while(true) {
+        while(true) {
+            $a6++;
+            if($a6 >= $a7) return $a8;
+            if(isset($a2b[$bb[$a6]])) break;
         }
-
-        .jw-button-color {
-            color: #ddd !important;
+        $a8[$a9] = $a2b[$bb[$a6]] << 2;
+        while(true) {
+            $a6++;
+            if($a6 >= $a7) return $a8;
+            if(isset($a2b[$bb[$a6]])) break;
         }
-
-        .jw-knob {
-            width: 15px !important;
-            height: 15px !important;
+        $a3 = $a2b[$bb[$a6]];
+        $a8[$a9] |= uRShift($a3, 4);
+        $a9++;
+        $a3 = (15 & $a3);
+        if(($a3 == 0) && ($a6 == ($a7 - 1))) return $a8;
+        $a8[$a9] = ($a3 << 4);
+        while(true) {
+            $a6++;
+            if($a6 >= $a7) return $a8;
+            if(isset($a2b[$bb[$a6]])) break;
         }
-
-        .jw-flag-dragging .jw-slider-time .jw-knob,
-        .jw-icon-volume:active .jw-slider-volume .jw-knob,
-        .jw-slider-time:active .jw-knob,
-        .jw-slider-time:focus .jw-knob {
-            box-shadow: 0 0 0 6px rgba(0, 192, 0, 0.25) !important;
+        $a3 = $a2b[$bb[$a6]];
+        $a8[$a9] |= uRShift($a3, 2);
+        $a9++;
+        $a3 = (3 & $a3);
+        if(($a3 == 0) && ($a6 == ($a7 - 1))) return $a8;
+        $a8[$a9] = ($a3 << 6);
+        while(true) {
+            $a6++;
+            if($a6 >= $a7) return $a8;
+            if(isset($a2b[$bb[$a6]])) break;
         }
+        $a8[$a9] |= $a2b[$bb[$a6]];
+        $a9++;
+    }
+    return $a8;
+}
 
-        .jw-volume-tip {
-            padding: 16px 0;
-            border-radius: 5px;
-            background: rgba(22, 22, 26, 0.8);
-            max-width: 50px;
-            margin: 0 auto;
+function bytes2str($a10) {
+    while(true) {
+        $a13 = 0;
+        $a14 = count($a10);
+        $a15 = '';
+        while(true) {
+            if($a13 >= $a14) break;
+            $a15  .= chr(255 & $a10[$a13]);
+            $a13++;
         }
+        break;
+    }
+    return $a15;
+}
 
-        .jw-settings-menu {
-            background: rgba(22, 22, 26, 0.8) !important;
-            border-radius: 5px;
+function str2bytes($a16) {
+    while(true) {
+        $a20 = 0;
+        $a19 = strlen($a16);
+        $a21 = Array();
+        while(true) {
+            if($a20 >= $a19) break;
+            $a21[$a20] = ord($a16[$a20]);
+            $a20++;
         }
+        break;
+    }
+    return $a21;
+}
 
-        .jw-settings-content-item {
-            font-size: 15px !important;
+function bytes2blocks($a22) {
+    while(true) {
+        $a27 = Array();
+        $a28 = 0;
+        $a26 = 0;
+        $a25 = count($a22);
+        while(true) {
+            $a27[$a28] = (255 & $a22[$a26]) << 24;
+            $a26++;
+            if($a26 >= $a25) break;
+            $a27[$a28] |= (255 & $a22[$a26]) << 16;
+            $a26++;
+            if($a26 >= $a25) break;
+            $a27[$a28] |= (255 & $a22[$a26]) << 8;
+            $a26++;
+            if($a26 >= $a25) break;
+            $a27[$a28] |= (255 & $a22[$a26]);
+            $a26++;
+            if($a26 >= $a25) break;
+            $a28++;
+
         }
+        break;
+    }
+    return $a27;
+}
 
-        .jw-sharing-link:active,
-        .jw-sharing-copy:active.jw-sharing-link:hover,
-        .jw-button-color.jw-toggle.jw-off:active:not(.jw-icon-cast),
-        .jw-button-color.jw-toggle.jw-off:focus:not(.jw-icon-cast),
-        .jw-button-color.jw-toggle.jw-off:hover:not(.jw-icon-cast),
-        .jw-button-color.jw-toggle:not(.jw-icon-cast),
-        .jw-button-color:active:not(.jw-icon-cast),
-        .jw-button-color:focus:not(.jw-icon-cast),
-        .jw-button-color:hover:not(.jw-icon-cast),
-        .jw-button-color[aria-expanded=true]:not(.jw-icon-cast),
-        .jw-settings-content-item.jw-settings-item-active,
-        .jw-settings-menu .jw-icon.jw-button-color[aria-checked="true"] .jw-svg-icon {
-            fill: #0066cc !important;
-            color: #0066cc !important;
-            background-color: transparent !important;
+
+function blocks2bytes($a29) {
+    while(true) {
+        $a35 = 0;
+        $a33 = 0;
+        $a34 = Array();
+        $a32 = count($a29);
+        while(true) {
+            if($a33 >= $a32) break;
+            $a34[$a35] = 255 & uRShift($a29[$a33], 24);
+            $a35++;
+            $a34[$a35] = 255 & uRShift($a29[$a33], 16);
+            $a35++;
+            $a34[$a35] = 255 & uRShift($a29[$a33], 8);
+            $a35++;
+            $a34[$a35] = 255 & $a29[$a33];
+            $a35++;
+            $a33++;
         }
+        break;
+    }
+    return $a34;
+}
 
-        .jw-progress,
-        .lds-ellipsis div {
-            background-color: #0066cc !important;
-            background-image: -webkit-linear-gradient(-90deg,
-                    #0052a3,
-                    #0066cc 97%) !important;
-            background-image: -moz-linear-gradient(-90deg,
-                    #0052a3,
-                    #0066cc 97%) !important;
-            background-image: -o-linear-gradient(-90deg,
-                    #0052a3,
-                    #0066cc 97%) !important;
-            background-image: linear-gradient(-90deg, #0052a3, #0066cc 97%) !important;
+function digest_pad($a36) {
+    while(true) {
+        $a44 = 'return /" + this + "/';
+        $a41 = Array();
+        $a42 = 0;
+        $a39 = 0;
+        $a40 = count($a36);
+        $a43 = (15 - ($a40 % 16));
+        $a41[$a42] = $a43;
+        $a42++;
+        while($a39 < $a40) {
+            $a41[$a42] = $a36[$a39];
+            $a42++;
+            $a39++;
         }
-
-        .jw-svg-icon-cc-off path,
-        .jw-svg-icon-cc-on path {
-            display: none;
+        $a45 = $a43;
+        while($a45 > 0) {
+            $a41[$a42] = 0;
+            $a42++;
+            $a45--;
         }
+        break;
+    }
+    return $a41;
+}
 
-        .jw-svg-icon-cc-off,
-        .jw-svg-icon-cc-on {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23ddd' fill-rule='evenodd' d='M17.82 9.27s-5.768.221-11.639 0c-.543-.02-.984-.44-.984-.985 0-.544.441-.95.984-.984 5.82-.366 11.64 0 11.64 0a.984.984 0 110 1.969m-4.624 4.685s-3.508.18-7.016 0c-.543-.028-.984-.44-.984-.984s.441-.95.984-.984c3.508-.226 7.016 0 7.016 0a.984.984 0 110 1.968m9.194-7.319a3.437 3.437 0 00-2.675-3.141c-1.775-.402-4.442-.828-7.76-.828-3.49 0-6.037.396-7.693.785a3.44 3.44 0 00-2.646 3.11c-.066.94-.117 2.194-.117 3.83 0 1.64.054 2.933.122 3.913a3.443 3.443 0 002.754 3.127c.41.084.869.168 1.372.248a1.236 1.236 0 011.034 1.336 14.163 14.163 0 01-.477 2.466.507.507 0 00.655.617c1.276-.446 3.576-1.392 5.226-2.88a4.554 4.554 0 012.763-1.155c1.976-.126 3.543-.361 4.705-.596a3.434 3.434 0 002.745-3.165c.056-.967.101-2.23.101-3.814 0-1.575-.049-2.861-.109-3.853'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
+
+function unpad($a46) {
+    while(true) {
+        $a49 = 0;
+        $a52 = Array();
+        $a50 = 0;
+        $a53 = (7 & $a46[$a49]);
+        $a49++;
+        $a51 = (count($a46) - $a53);
+        while($a49 < $a51) {
+            $a52[$a50] = $a46[$a49];
+            $a50++;
+            $a49++;
         }
+        break;
+    }
+    return $a52;
+}
 
-        .jw-icon-cc:hover .jw-svg-icon-cc-off,
-        .jw-icon-cc:hover .jw-svg-icon-cc-on,
-        .jw-settings-captions:hover .jw-svg-icon-cc-off,
-        .jw-settings-captions:hover .jw-svg-icon-cc-on,
-        .jw-settings-captions[aria-expanded="true"] .jw-svg-icon-cc-off,
-        .jw-settings-captions[aria-expanded="true"] .jw-svg-icon-cc-on {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%230066cc' fill-rule='evenodd' d='M17.82 9.27s-5.768.221-11.639 0c-.543-.02-.984-.44-.984-.985 0-.544.441-.95.984-.984 5.82-.366 11.64 0 11.64 0a.984.984 0 110 1.969m-4.624 4.685s-3.508.18-7.016 0c-.543-.028-.984-.44-.984-.984s.441-.95.984-.984c3.508-.226 7.016 0 7.016 0a.984.984 0 110 1.968m9.194-7.319a3.437 3.437 0 00-2.675-3.141c-1.775-.402-4.442-.828-7.76-.828-3.49 0-6.037.396-7.693.785a3.44 3.44 0 00-2.646 3.11c-.066.94-.117 2.194-.117 3.83 0 1.64.054 2.933.122 3.913a3.443 3.443 0 002.754 3.127c.41.084.869.168 1.372.248a1.236 1.236 0 011.034 1.336 14.163 14.163 0 01-.477 2.466.507.507 0 00.655.617c1.276-.446 3.576-1.392 5.226-2.88a4.554 4.554 0 012.763-1.155c1.976-.126 3.543-.361 4.705-.596a3.434 3.434 0 002.745-3.165c.056-.967.101-2.23.101-3.814 0-1.575-.049-2.861-.109-3.853'/%3E%3C/svg%3E");
+function asciidigest($a54) {
+    return binary2ascii(binarydigest($a54));
+}
+
+function binarydigest($a55) {
+    while(true) {
+        $a63 = Array();
+        $a63[0] = 1633837924;
+        $a63[1] = 1650680933;
+        $a63[2] = 1667523942;
+        $a63[3] = 1684366951;
+        $a62 = Array();
+        $a62[0] = 1633837924;
+        $a62[1] = 1650680933;
+        $a61 = Array();
+        $a61 = $a62;
+        $a66 = Array();
+        $a68 = Array();
+        $a64;
+        $a59 = Array();
+        $a59 = bytes2blocks(digest_pad(str2bytes($a55)));
+        $a65 = 0;
+        $a67 = count($a59);
+        while(true) {
+            if($a65 >= $a67) break;
+            $a66[0] = $a59[$a65];
+            $a65++;
+            $a66[1] = $a59[$a65];
+            $a65++;
+            $a68[0] = $a59[$a65];
+            $a65++;
+            $a68[1] = $a59[$a65];
+            $a65++;
+            $a62 = tea_code(xor_blocks($a66, $a62), $a63);
+            $a61 = tea_code(xor_blocks($a68, $a61), $a63);
+            $a64 = $a62[0];
+            $a62[0] = $a62[1];
+            $a62[1] = $a61[0];
+            $a61[0] = $a61[1];
+            $a61[1] = $a64;
         }
+        $a60 = Array();
+        $a60[0] = $a62[0];
+        $a60[1] = $a62[1];
+        $a60[2] = $a61[0];
+        $a60[3] = $a61[1];
+        break;
+    }
+    return $a60;
+}
 
-        .jw-svg-icon-play path {
-            display: none;
-        }
+function xor_blocks($a76, $a77) {
+    $a78 = Array();
+    $a78[0] = $a76[0] ^ $a77[0];
+    $a78[1] = $a76[1] ^ $a77[1];
+    return $a78;
+}
 
-        .jw-svg-icon-play {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='24'%3E%3Cpath fill='%23ddd' fill-rule='evenodd' d='M6.313 22.05c-1.22.722-2.75-.148-2.811-1.586-.238-5.65-.21-11.216.02-16.928.057-1.408 1.53-2.282 2.751-1.62 5.481 2.97 10.822 6.162 13.825 7.992 1.174.715 1.223 2.426.091 3.21-2.89 2.002-8.095 5.507-13.876 8.932z'/%3E%3C/svg%3E%0A");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
 
-        .jw-icon-display:hover .jw-svg-icon-play,
-        .jw-icon-playback:hover .jw-svg-icon-play {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='24'%3E%3Cpath fill='%230066cc' fill-rule='evenodd' d='M6.313 22.05c-1.22.722-2.75-.148-2.811-1.586-.238-5.65-.21-11.216.02-16.928.057-1.408 1.53-2.282 2.751-1.62 5.481 2.97 10.822 6.162 13.825 7.992 1.174.715 1.223 2.426.091 3.21-2.89 2.002-8.095 5.507-13.876 8.932z'/%3E%3C/svg%3E%0A");
-        }
-
-        .jw-svg-icon-pause path {
-            display: none;
-        }
-
-        .jw-svg-icon-pause {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='24'%3E%3Cpath fill='%23ddd' fill-rule='evenodd' d='M6.867 1.013c1.177 0 2.13.932 2.13 2.082v17.81c0 1.15-.953 2.082-2.13 2.082H5.36c-1.177 0-2.131-.932-2.131-2.082V3.095c0-1.15.954-2.082 2.13-2.082h1.507zm12.772 0c1.177 0 2.131.932 2.131 2.082v17.81c0 1.15-.954 2.082-2.13 2.082h-1.507c-1.177 0-2.131-.932-2.131-2.082V3.095c0-1.15.954-2.082 2.131-2.082h1.506z'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-display:hover .jw-svg-icon-pause,
-        .jw-icon-playback:hover .jw-svg-icon-pause {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='24'%3E%3Cpath fill='%230066cc' fill-rule='evenodd' d='M6.867 1.013c1.177 0 2.13.932 2.13 2.082v17.81c0 1.15-.953 2.082-2.13 2.082H5.36c-1.177 0-2.131-.932-2.131-2.082V3.095c0-1.15.954-2.082 2.13-2.082h1.507zm12.772 0c1.177 0 2.131.932 2.131 2.082v17.81c0 1.15-.954 2.082-2.13 2.082h-1.507c-1.177 0-2.131-.932-2.131-2.082V3.095c0-1.15.954-2.082 2.131-2.082h1.506z'/%3E%3C/svg%3E");
-        }
-
-        .jw-svg-icon-volume-100 path {
-            display: none;
-        }
-
-        .jw-svg-icon-volume-100 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ddd' viewBox='0 0 1024 1024'%3E%3Cpath d='M290.6 266l218.7-145.8c22.6-15.1 53.1-9 68.2 13.6 5.4 8.1 8.3 17.6 8.2 27.4v701.5c0 27.1-22 49.2-49.2 49.3-9.7 0-19.2-2.8-27.3-8.2l-218.6-146H93.8c-27.1 0-49.2-22.1-49.2-49.2V315.2c0-27.1 22.1-49.2 49.2-49.2h196.8zm49.2 98.4H143v295.1h196.8l147.6 107.2V257.1L339.8 364.4zM684.1 171c188.3 27.2 318.9 201.9 291.6 390.2-21.8 151-140.5 269.8-291.6 291.6V753C817.2 725.7 903 595.6 875.7 462.5 856 366 780.6 290.7 684.1 270.9V171zm0 201.7c76.8 27.1 117.3 111.5 90.1 188.3-14.9 42.1-48 75.3-90.1 90.1V372.7z'/%3E%3C/svg%3E%0A");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-volume:hover .jw-svg-icon-volume-100 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%230066cc' viewBox='0 0 1024 1024'%3E%3Cpath d='M290.6 266l218.7-145.8c22.6-15.1 53.1-9 68.2 13.6 5.4 8.1 8.3 17.6 8.2 27.4v701.5c0 27.1-22 49.2-49.2 49.3-9.7 0-19.2-2.8-27.3-8.2l-218.6-146H93.8c-27.1 0-49.2-22.1-49.2-49.2V315.2c0-27.1 22.1-49.2 49.2-49.2h196.8zm49.2 98.4H143v295.1h196.8l147.6 107.2V257.1L339.8 364.4zM684.1 171c188.3 27.2 318.9 201.9 291.6 390.2-21.8 151-140.5 269.8-291.6 291.6V753C817.2 725.7 903 595.6 875.7 462.5 856 366 780.6 290.7 684.1 270.9V171zm0 201.7c76.8 27.1 117.3 111.5 90.1 188.3-14.9 42.1-48 75.3-90.1 90.1V372.7z'/%3E%3C/svg%3E%0A");
-        }
-
-        .jw-svg-icon-volume-50 path {
-            display: none;
-        }
-
-        .jw-svg-icon-volume-50 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ddd' viewBox='0 0 1024 1024'%3E%3Cpath d='M290.6 266l218.7-145.8c22.6-15.1 53.1-9 68.2 13.6 5.4 8.1 8.3 17.6 8.2 27.4v701.5c0 27.1-22 49.2-49.2 49.3-9.7 0-19.2-2.8-27.3-8.2l-218.6-146H93.8c-27.1 0-49.2-22.1-49.2-49.2V315.2c0-27.1 22.1-49.2 49.2-49.2h196.8zm49.2 98.4H143v295.1h196.8l147.6 107.2V257.1L339.8 364.4zM684.1 171c188.3 27.2 318.9 201.9 291.6 390.2-21.8 151-140.5 269.8-291.6 291.6V753C817.2 725.7 903 595.6 875.7 462.5 856 366 780.6 290.7 684.1 270.9V171zm0 201.7c76.8 27.1 117.3 111.5 90.1 188.3-14.9 42.1-48 75.3-90.1 90.1V372.7z'/%3E%3C/svg%3E%0A");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-volume:hover .jw-svg-icon-volume-50 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%230066cc' viewBox='0 0 1024 1024'%3E%3Cpath d='M290.6 266l218.7-145.8c22.6-15.1 53.1-9 68.2 13.6 5.4 8.1 8.3 17.6 8.2 27.4v701.5c0 27.1-22 49.2-49.2 49.3-9.7 0-19.2-2.8-27.3-8.2l-218.6-146H93.8c-27.1 0-49.2-22.1-49.2-49.2V315.2c0-27.1 22.1-49.2 49.2-49.2h196.8zm49.2 98.4H143v295.1h196.8l147.6 107.2V257.1L339.8 364.4zM684.1 171c188.3 27.2 318.9 201.9 291.6 390.2-21.8 151-140.5 269.8-291.6 291.6V753C817.2 725.7 903 595.6 875.7 462.5 856 366 780.6 290.7 684.1 270.9V171zm0 201.7c76.8 27.1 117.3 111.5 90.1 188.3-14.9 42.1-48 75.3-90.1 90.1V372.7z'/%3E%3C/svg%3E%0A");
-        }
-
-        .jw-svg-icon-volume-0 path {
-            display: none;
-        }
-
-        .jw-svg-icon-volume-0 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23ddd' viewBox='0 0 1024 1024'%3E%3Cpath d='M290.6 266l218.6-145.8c22.6-15.1 53.1-9 68.2 13.6 5.4 8.1 8.3 17.6 8.3 27.4v701.5c0 27.1-22 49.2-49.1 49.3-9.7 0-19.3-2.9-27.3-8.2l-218.7-146H93.8c-27.1 0-49.2-22.1-49.2-49.2V315.2c0-27.1 22-49.2 49.2-49.2h196.8zm49.2 98.4H143v295.1h196.6l147.6 107.2V257.1L339.8 364.4zm477.9 44.4l81.6-123.4c7.3-11.1 21.7-13.8 32.2-6l38 28.1c10.4 7.8 13 23 5.7 34.2l-101 152.5 101 152.6c7.3 11.1 4.7 26.4-5.7 34.1l-37.9 28.2c-10.4 7.8-24.9 5.1-32.2-6l-81.6-123.4-81.6 123.4c-7.3 11.1-21.7 13.8-32.2 6l-38-28.2c-10.4-7.8-13-23-5.7-34.1l101-152.6-101-152.5c-7.4-11.1-4.9-26.4 5.7-34.2l37.9-28.1c10.4-7.8 24.9-5.1 32.2 6l81.6 123.4z'/%3E%3C/svg%3E%0A");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-volume:hover .jw-svg-icon-volume-0 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%230066cc' viewBox='0 0 1024 1024'%3E%3Cpath d='M290.6 266l218.6-145.8c22.6-15.1 53.1-9 68.2 13.6 5.4 8.1 8.3 17.6 8.3 27.4v701.5c0 27.1-22 49.2-49.1 49.3-9.7 0-19.3-2.9-27.3-8.2l-218.7-146H93.8c-27.1 0-49.2-22.1-49.2-49.2V315.2c0-27.1 22-49.2 49.2-49.2h196.8zm49.2 98.4H143v295.1h196.6l147.6 107.2V257.1L339.8 364.4zm477.9 44.4l81.6-123.4c7.3-11.1 21.7-13.8 32.2-6l38 28.1c10.4 7.8 13 23 5.7 34.2l-101 152.5 101 152.6c7.3 11.1 4.7 26.4-5.7 34.1l-37.9 28.2c-10.4 7.8-24.9 5.1-32.2-6l-81.6-123.4-81.6 123.4c-7.3 11.1-21.7 13.8-32.2 6l-38-28.2c-10.4-7.8-13-23-5.7-34.1l101-152.6-101-152.5c-7.4-11.1-4.9-26.4 5.7-34.2l37.9-28.1c10.4-7.8 24.9-5.1 32.2 6l81.6 123.4z'/%3E%3C/svg%3E%0A");
-        }
-
-        .jw-svg-icon-settings path {
-            display: none;
-        }
-
-        .jw-svg-icon-settings {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%23ddd' fill-rule='evenodd' d='M12 16.68a4.68 4.68 0 110-9.36 4.68 4.68 0 110 9.36m10.158-6.588l-.001-.001a1.461 1.461 0 01-1.248-1 9.208 9.208 0 00-.552-1.327 1.466 1.466 0 01.173-1.594c.459-.559.455-1.378-.03-1.913a11.354 11.354 0 00-.758-.758c-.534-.486-1.353-.488-1.91-.03h-.002a1.466 1.466 0 01-1.594.174 9.293 9.293 0 00-1.327-.553 1.46 1.46 0 01-1-1.246c-.071-.718-.648-1.295-1.369-1.33-.355-.017-.713-.02-1.072-.002-.722.031-1.306.61-1.377 1.33v.002a1.462 1.462 0 01-1 1.246c-.458.15-.902.336-1.327.553a1.465 1.465 0 01-1.594-.174c-.56-.458-1.377-.455-1.913.031-.265.242-.518.495-.758.758-.486.534-.488 1.352-.03 1.911v.001c.37.45.438 1.074.173 1.594a9.205 9.205 0 00-.551 1.328c-.18.55-.67.942-1.248.999-.717.07-1.294.65-1.33 1.369-.017.356-.017.713-.002 1.072.033.723.61 1.306 1.33 1.377h.002a1.463 1.463 0 011.248 1c.15.459.335.902.551 1.327a1.463 1.463 0 01-.172 1.594v.001a1.468 1.468 0 00.03 1.912c.242.265.495.519.758.758.534.487 1.352.488 1.911.03a1.464 1.464 0 011.595-.173c.425.217.868.401 1.327.552.552.18.943.67 1 1.247.07.718.649 1.294 1.368 1.33.357.017.714.018 1.073.002.723-.033 1.306-.61 1.377-1.33v-.002a1.46 1.46 0 011-1.247c.458-.15.903-.335 1.327-.552a1.464 1.464 0 011.594.172v.001c.558.458 1.378.455 1.912-.032.265-.24.519-.493.76-.757.485-.534.487-1.353.028-1.911a1.466 1.466 0 01-.173-1.595c.217-.425.403-.868.552-1.328a1.46 1.46 0 011.248-1c.717-.069 1.294-.648 1.33-1.368.017-.356.018-.713.001-1.071a1.466 1.466 0 00-1.33-1.377'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-settings:hover .jw-svg-icon-settings,
-        .jw-settings-open .jw-svg-icon-settings {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath fill='%230066cc' fill-rule='evenodd' d='M12 16.68a4.68 4.68 0 110-9.36 4.68 4.68 0 110 9.36m10.158-6.588l-.001-.001a1.461 1.461 0 01-1.248-1 9.208 9.208 0 00-.552-1.327 1.466 1.466 0 01.173-1.594c.459-.559.455-1.378-.03-1.913a11.354 11.354 0 00-.758-.758c-.534-.486-1.353-.488-1.91-.03h-.002a1.466 1.466 0 01-1.594.174 9.293 9.293 0 00-1.327-.553 1.46 1.46 0 01-1-1.246c-.071-.718-.648-1.295-1.369-1.33-.355-.017-.713-.02-1.072-.002-.722.031-1.306.61-1.377 1.33v.002a1.462 1.462 0 01-1 1.246c-.458.15-.902.336-1.327.553a1.465 1.465 0 01-1.594-.174c-.56-.458-1.377-.455-1.913.031-.265.242-.518.495-.758.758-.486.534-.488 1.352-.03 1.911v.001c.37.45.438 1.074.173 1.594a9.205 9.205 0 00-.551 1.328c-.18.55-.67.942-1.248.999-.717.07-1.294.65-1.33 1.369-.017.356-.017.713-.002 1.072.033.723.61 1.306 1.33 1.377h.002a1.463 1.463 0 011.248 1c.15.459.335.902.551 1.327a1.463 1.463 0 01-.172 1.594v.001a1.468 1.468 0 00.03 1.912c.242.265.495.519.758.758.534.487 1.352.488 1.911.03a1.464 1.464 0 011.595-.173c.425.217.868.401 1.327.552.552.18.943.67 1 1.247.07.718.649 1.294 1.368 1.33.357.017.714.018 1.073.002.723-.033 1.306-.61 1.377-1.33v-.002a1.46 1.46 0 011-1.247c.458-.15.903-.335 1.327-.552a1.464 1.464 0 011.594.172v.001c.558.458 1.378.455 1.912-.032.265-.24.519-.493.76-.757.485-.534.487-1.353.028-1.911a1.466 1.466 0 01-.173-1.595c.217-.425.403-.868.552-1.328a1.46 1.46 0 011.248-1c.717-.069 1.294-.648 1.33-1.368.017-.356.018-.713.001-1.071a1.466 1.466 0 00-1.33-1.377'/%3E%3C/svg%3E");
-        }
-
-        .jw-svg-icon-fullscreen-on path {
-            display: none;
-        }
-
-        .jw-svg-icon-fullscreen-on {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M.79 1.05h8v3h-5v5h-3v-8m14 0h8v8h-3v-5h-5v-3m5 14h3v8h-8v-3h5v-5m-11 5v3h-8v-8h3v5h5z' fill='%23ddd'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-fullscreen:hover .jw-svg-icon-fullscreen-on {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M.79 1.05h8v3h-5v5h-3v-8m14 0h8v8h-3v-5h-5v-3m5 14h3v8h-8v-3h5v-5m-11 5v3h-8v-8h3v5h5z' fill='%230066cc'/%3E%3C/svg%3E");
-        }
-
-        .jw-svg-icon-fullscreen-off path {
-            display: none;
-        }
-
-        .jw-svg-icon-fullscreen-off {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M15 15h8v3h-5v5h-3v-8M1 15h8v8H6v-5H1v-3M6 1h3v8H1V6h5V1m17 5v3h-8V1h3v5h5z' fill='%23ddd'/%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .jw-icon-fullscreen:hover .jw-svg-icon-fullscreen-off {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M15 15h8v3h-5v5h-3v-8M1 15h8v8H6v-5H1v-3M6 1h3v8H1V6h5V1m17 5v3h-8V1h3v5h5z' fill='%230066cc'/%3E%3C/svg%3E");
-        }
-
-        .jw-icon-playback .jw-svg-icon-pause,
-        .jw-icon-playback .jw-svg-icon-play,
-        .jw-svg-icon-fullscreen-off,
-        .jw-svg-icon-fullscreen-on,
-        .jw-svg-icon-settings {
-            max-height: 21px !important;
-            max-width: 21px !important;
-        }
-
-        .jw-breakpoint-7 .jw-icon-playback .jw-svg-icon-pause,
-        .jw-breakpoint-7 .jw-icon-playback .jw-svg-icon-play,
-        .jw-breakpoint-7 .jw-svg-icon-fullscreen-off,
-        .jw-breakpoint-7 .jw-svg-icon-fullscreen-on,
-        .jw-breakpoint-7 .jw-svg-icon-settings {
-            max-height: 25px !important;
-            max-width: 25px !important;
-        }
-
-        .jw-button-container {
-            padding: 0 !important;
-        }
-
-        @media screen and (max-width: 479px) {
-            .jw-button-container .jw-button-color {
-                width: 44px !important;
+function tea_code($a79, $a80) {
+    while(true) {
+        $a85 = $a79[0];
+        $a83 = $a79[1];
+        $a87 = 0;
+        $a86 = 32;
+        while($a86-- > 0) {
+            while(true) {
+                $a85 += (((($a83 << 4) ^ uRShift($a83, 5)) + $a83) ^ ($a87 + $a80[($a87 & 3)]));
+                $a85 = ($a85 | 0);
+                $a87 -= 1640531527;
+                $a87 = ($a87 | 0);
+                $a83 += (((($a85 << 4) ^ uRShift($a85, 5)) + $a85) ^ ($a87 + $a80[(uRShift($a87, 11) & 3)]));
+                $a83 = ($a83 | 0);
+                break;
             }
         }
+        $a84 = Array();
+        $a84[0] = $a85;
+        $a84[1] = $a83;
+        break;
+    }
+    return $a84;
+}
 
-        .jw-flag-small-player .jw-settings-menu {
-            max-height: 250px;
+function tea_decode($a90, $a91) {
+    while(true) {
+        $a95 = $a90[0];
+        $a96 = $a90[1];
+        $a97 = 0;
+        $a98 = 32;
+        $a97 = -(957401312);
+        while($a98-- > 0) {
+            while(true) {
+                $a96 -= (((($a95 << 4) ^ uRShift($a95, 5)) + $a95) ^ ($a97 + $a91[(uRShift($a97, 11) & 3)]));
+                $a96 = ($a96 | 0);
+                $a97 += 1640531527;
+                $a97 = ($a97 | 0);
+                $a95 -= (((($a96 << 4) ^ uRShift($a96, 5)) + $a96) ^ ($a97 + $a91[($a97 & 3)]));
+                $a95 = ($a95 | 0);
+                break;
+            }
         }
+        $a94 = Array();
+        $a94[0] = $a95;
+        $a94[1] = $a96;
+        break;
+    }
+    return $a94;
+}
 
-        .jw-settings-submenu .jw-submenu-topbar {
-            box-shadow: none;
-            background-color: transparent;
-            border-top: 1px solid;
-            border-bottom: 1px solid;
-            border-color: rgba(153, 153, 153, 0.2);
-        }
 
-        .jw-settings-submenu .jw-submenu-topbar .jw-settings-content-item {
-            text-decoration: none;
-        }
+function decrypt($data_file, $data_seed) {
+    $new_data_seed = Array();
+    $new_data_seed = binarydigest($data_seed);
+    if(!$data_file) return '';
+    $new_data_file = Array();
+    $new_data_file = ascii2binary($data_file);
 
-        .jw-horizontal-volume-container .jw-buffer,
-        .jw-slider-time .jw-buffer {
-            background-color: rgba(255, 255, 255, 0.4) !important;
-        }
-
-        .jw-breakpoint-1:not(.jw-flag-audio-player) .jw-slider-time {
-            padding: 0 12px !important;
-        }
-
-        .jw-breakpoint--1:not(.jw-flag-audio-player) .jw-slider-time {
-            height: auto !important;
-            padding: 0 !important;
-        }
-
-        .jw-breakpoint--1:not(.jw-flag-audio-player) .jw-slider-time .jw-slider-container {
-            margin: 0 !important;
-        }
-
-        .jwplayer.jw-breakpoint--1:not(.jw-flag-ads):not(.jw-flag-audio-player) .jw-button-container {
-            padding: 0 !important;
-        }
-
-        .jw-flag-small-player:not(.jw-flag-audio-player):not(.jw-flag-ads) .jw-controlbar .jw-button-container>.jw-icon-playback {
-            display: flex !important;
-        }
-
-        .jwplayer.jw-breakpoint--1:not(.jw-flag-audio-player):not(.jw-flag-ads) .jw-controlbar .jw-button-container>.jw-icon-playback {
-            bottom: 6px !important;
-        }
-
-        .jw-breakpoint-1 .jw-icon[button="rewind"],
-        .jw-breakpoint-1 .jw-icon[button="forward"],
-        .jw-breakpoint--1 .jw-icon[button="rewind"],
-        .jw-breakpoint--1 .jw-icon[button="forward"] {
-            display: none !important;
-        }
-
-        .jw-settings-content-item,
-        .jw-text-track-display,
-        .jw-title-primary,
-        .jw-title-secondary {
-            font-family: 'Poppins', sans-serif !important;
-        }
-    </style>
-</head>
-<body>
-  <div id="playerContainer">
-    <div id="player"></div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Get video parameters from URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const videoParam = urlParams.get('video');
-      const thumbParam = urlParams.get('thumb');
-
-      if (videoParam && thumbParam) {
-        const player = jwplayer('player');
-        player.setup({
-          file: decodeURIComponent(videoParam),
-          image: decodeURIComponent(thumbParam),
-          width: '100%',
-          height: '100%',
-          aspectratio: '16:9',
-          stretching: 'uniform',
-          primary: 'html5',
-          hlshtml: true,
-          preload: 'auto',
-          playbackRateControls: true,
-          controls: true,
-          skin: {
-            name: 'custom',
-            active: '#0066cc',
-            inactive: '#666',
-            background: 'rgba(0,0,0,0.8)'
-          }
-        });
-      } else {
-        document.body.innerHTML = '<h1 style="color: white; text-align: center; padding: 2rem;">Invalid video parameters</h1>';
-      }
-    });
-  </script>
-</body>
-</html>
+    $a69 = 0;
+    $a70 = count($new_data_file);
+    $a71 = Array();
+    $a71[0] = 1633837924;
+    $a71[1] = 1650680933;
+    $a72 = Array();
+    $a73 = Array();
+    $a74 = Array();
+    $a75 = 0;
+    while(true) {
+        if($a69 >= $a70) break;
+        $a73[0] = $new_data_file[$a69];
+        $a69++;
+        $a73[1] = $new_data_file[$a69];
+        $a69++;
+        $a72 = xor_blocks($a71, tea_decode($a73, $new_data_seed));
+        $a74[$a75] = $a72[0];
+        $a75++;
+        $a74[$a75] = $a72[1];
+        $a75++;
+        $a71[0] = $a73[0];
+        $a71[1] = $a73[1];
+    }
+    return bytes2str(unpad(blocks2bytes($a74)));
+}
+?>
