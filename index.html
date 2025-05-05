@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TV en Vivo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>TV en Vivo</h1>
+  </header>
+  <main>
+    <section class="player-container">
+      <video id="video" controls autoplay></video>
+    </section>
+    <section class="channel-list">
+      <h2>Canales</h2>
+      <div class="channels">
+        <button onclick="playChannel('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8')">Canal 1</button>
+        <button onclick="playChannel('https://moiptvhls-i.akamaihd.net/hls/live/652316/channel1/master.m3u8')">Canal 2</button>
+        <button onclick="playChannel('https://linear304-gb-hls1-prd-ak.cdn.skycdp.com/306/8062.m3u8')">Canal 3</button>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 TV en Vivo</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="script.js"></script>
+</body>
+</html>
