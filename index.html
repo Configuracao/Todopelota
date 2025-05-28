@@ -1,49 +1,127 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deportes en Vivo</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>Generador de Canales JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f1f1;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            font-size: 1em;
+        }
+        label {
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+        .agregar { background-color: #28a745; }
+        .reiniciar { background-color: #dc3545; }
+        .copiar { background-color: #007bff; }
+        pre {
+            background: #000;
+            color: #0f0;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Deportes en Vivo</h1>
-  </header>
 
-  <!-- Carrusel Destacado -->
-  <section class="carousel">
-    <div class="carousel-track">
-      <a href="player.html?canal=https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">
-        <img src="https://placehold.co/1280x500/111/00ffe7?text=Fútbol+Internacional" alt="Fútbol" />
-      </a>
-      <a href="player.html?canal=https://moiptvhls-i.akamaihd.net/hls/live/652316/channel1/master.m3u8">
-        <img src="https://placehold.co/1280x500/111/ff4444?text=Boxeo+Live" alt="Boxeo" />
-      </a>
-      <a href="player.html?canal=https://linear304-gb-hls1-prd-ak.cdn.skycdp.com/306/8062.m3u8">
-        <img src="https://placehold.co/1280x500/111/44ff44?text=Fórmula+1+HD" alt="F1" />
-      </a>
+    <h2>Generador de Canales (con ID automático)</h2>
+
+    <div class="form-group">
+        <label for="name">Nombre del canal:</label>
+        <input type="text" id="name" value="">
     </div>
-  </section>
 
-  <!-- Grid de Canales -->
-  <main class="channel-grid">
-    <a href="player.html?canal=https://deporte1.m3u8" class="channel-card">
-      <img src="https://placehold.co/500x280/0044ff/fff?text=ESPN+HD" alt="ESPN HD">
-      <div class="channel-info">ESPN HD</div>
-    </a>
-    <a href="player.html?canal=https://deporte2.m3u8" class="channel-card">
-      <img src="https://placehold.co/500x280/8800ff/fff?text=Fox+Sports" alt="Fox Sports">
-      <div class="channel-info">Fox Sports</div>
-    </a>
-    <a href="player.html?canal=https://deporte3.m3u8" class="channel-card">
-      <img src="https://placehold.co/500x280/ff4400/fff?text=TyC+Sports" alt="TyC Sports">
-      <div class="channel-info">TyC Sports</div>
-    </a>
-  </main>
+    <div class="form-group">
+        <label for="category">Categoría (una o varias separadas por coma):</label>
+        <input type="text" id="category" value="">
+    </div>
 
-  <footer>
-    <p>&copy; 2025 Deportes en Vivo</p>
-  </footer>
+    <div class="form-group">
+        <label for="logo">URL del logo:</label>
+        <input type="text" id="logo" value="">
+    </div>
+
+    <div class="form-group">
+        <label for="href">Enlace embed:</label>
+        <input type="text" id="href" value="">
+    </div>
+
+    <button class="agregar" onclick="generarJSON()">Agregar canal</button>
+    <button class="reiniciar" onclick="reiniciar()">Reiniciar</button>
+    <button class="copiar" onclick="copiarAlPortapapeles()">Copiar al portapapeles</button>
+
+    <pre id="resultado">[]</pre>
+
+    <script>
+        let idActual = 1;
+        let canales = [];
+
+        function generarJSON() {
+            const name = document.getElementById("name").value.trim();
+            const category = document.getElementById("category").value.split(",").map(c => c.trim());
+            const logo = document.getElementById("logo").value.trim();
+            const href = document.getElementById("href").value.trim();
+
+            if (!name || !category || !logo || !href) {
+                alert("Todos los campos son obligatorios.");
+                return;
+            }
+
+            const canal = {
+                id: idActual++,
+                name,
+                category,
+                logo,
+                href
+            };
+
+            canales.push(canal);
+            document.getElementById("resultado").textContent = JSON.stringify(canales, null, 4);
+
+            // Limpia campos menos el logo
+            document.getElementById("name").value = "";
+            document.getElementById("category").value = "";
+            document.getElementById("href").value = "";
+            document.getElementById("name").focus();
+        }
+
+        function reiniciar() {
+            if (confirm("¿Estás seguro de reiniciar todos los datos?")) {
+                canales = [];
+                idActual = 1;
+                document.getElementById("resultado").textContent = "[]";
+            }
+        }
+
+        function copiarAlPortapapeles() {
+            const texto = document.getElementById("resultado").textContent;
+            navigator.clipboard.writeText(texto).then(() => {
+                alert("Código copiado al portapapeles ✅");
+            }).catch(err => {
+                alert("Error al copiar: " + err);
+            });
+        }
+    </script>
+
 </body>
 </html>
