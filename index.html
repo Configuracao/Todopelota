@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Generador de Canales JSON</title>
+    <title>Generador de Canal</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +12,7 @@
         .form-group {
             margin-bottom: 15px;
         }
-        input, textarea {
+        input {
             width: 100%;
             padding: 8px;
             font-size: 1em;
@@ -21,69 +21,67 @@
             font-weight: bold;
         }
         button {
-            padding: 10px 20px;
+            padding: 10px 15px;
             font-size: 1em;
-            border: none;
             color: white;
-            cursor: pointer;
-            margin-right: 10px;
+            border: none;
             margin-top: 10px;
+            margin-right: 10px;
+            cursor: pointer;
         }
-        .agregar { background-color: #28a745; }
-        .reiniciar { background-color: #dc3545; }
+        .generar { background-color: #28a745; }
         .copiar { background-color: #007bff; }
+        .reiniciar { background-color: #dc3545; }
         pre {
             background: #000;
             color: #0f0;
             padding: 15px;
             margin-top: 20px;
             white-space: pre-wrap;
-            word-break: break-word;
         }
     </style>
 </head>
 <body>
 
-    <h2>Generador de Canales (con ID automático)</h2>
+    <h2>Generador de Canal (formato individual)</h2>
 
     <div class="form-group">
         <label for="name">Nombre del canal:</label>
-        <input type="text" id="name" value="">
+        <input type="text" id="name" value="SPACE">
     </div>
 
     <div class="form-group">
         <label for="category">Categoría (una o varias separadas por coma):</label>
-        <input type="text" id="category" value="">
+        <input type="text" id="category" value="cine">
     </div>
 
     <div class="form-group">
         <label for="logo">URL del logo:</label>
-        <input type="text" id="logo" value="">
+        <input type="text" id="logo" value="https://logos-world.net/wp-content/uploads/2023/03/Space-Logo.png">
     </div>
 
     <div class="form-group">
         <label for="href">Enlace embed:</label>
-        <input type="text" id="href" value="">
+        <input type="text" id="href" value="https://embed.sdfgnksbounce.com/embed2/space.html">
     </div>
 
-    <button class="agregar" onclick="generarJSON()">Agregar canal</button>
-    <button class="reiniciar" onclick="reiniciar()">Reiniciar</button>
-    <button class="copiar" onclick="copiarAlPortapapeles()">Copiar al portapapeles</button>
+    <button class="generar" onclick="generarCanal()">Generar</button>
+    <button class="copiar" onclick="copiar()">Copiar</button>
+    <button class="reiniciar" onclick="reiniciar()">Reiniciar ID</button>
 
-    <pre id="resultado">[]</pre>
+    <pre id="resultado"></pre>
 
     <script>
         let idActual = 1;
-        let canales = [];
 
-        function generarJSON() {
+        function generarCanal() {
             const name = document.getElementById("name").value.trim();
             const category = document.getElementById("category").value.split(",").map(c => c.trim());
             const logo = document.getElementById("logo").value.trim();
             const href = document.getElementById("href").value.trim();
 
-            if (!name || !category || !logo || !href) {
-                alert("Todos los campos son obligatorios.");
+            if (!name || !logo || !href || category.length === 0) {
+                alert("Por favor completa todos los campos.");
                 return;
             }
 
@@ -95,31 +93,24 @@
                 href
             };
 
-            canales.push(canal);
-            document.getElementById("resultado").textContent = JSON.stringify(canales, null, 4);
+            const canalTexto = JSON.stringify(canal, null, 4) + ",";
+            document.getElementById("resultado").textContent = canalTexto;
 
-            // Limpia campos menos el logo
-            document.getElementById("name").value = "";
-            document.getElementById("category").value = "";
-            document.getElementById("href").value = "";
             document.getElementById("name").focus();
         }
 
-        function reiniciar() {
-            if (confirm("¿Estás seguro de reiniciar todos los datos?")) {
-                canales = [];
-                idActual = 1;
-                document.getElementById("resultado").textContent = "[]";
-            }
-        }
-
-        function copiarAlPortapapeles() {
+        function copiar() {
             const texto = document.getElementById("resultado").textContent;
             navigator.clipboard.writeText(texto).then(() => {
-                alert("Código copiado al portapapeles ✅");
-            }).catch(err => {
-                alert("Error al copiar: " + err);
+                alert("Copiado al portapapeles ✅");
             });
+        }
+
+        function reiniciar() {
+            if (confirm("¿Reiniciar ID a 1?")) {
+                idActual = 1;
+                document.getElementById("resultado").textContent = "";
+            }
         }
     </script>
 
