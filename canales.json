@@ -1,0 +1,18 @@
+[
+  {
+    "nombre": "ESPN",
+    "url": "https://example.com/espn.m3u8"
+  },
+  {
+    "nombre": "Fox Sports",
+    "url": "https://example.com/foxsports.m3u8"
+  },
+  {
+    "nombre": "TNT Sports",
+    "url": "https://example.com/tntsports.m3u8"
+  },
+  {
+    "nombre": "TyC Sports",
+    "url": "https://example.com/tycsports.m3u8"
+  }
+]
