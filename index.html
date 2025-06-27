@@ -1,118 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Generador de Canal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f1f1f1;
-            padding: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            font-size: 1em;
-        }
-        label {
-            font-weight: bold;
-        }
-        button {
-            padding: 10px 15px;
-            font-size: 1em;
-            color: white;
-            border: none;
-            margin-top: 10px;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-        .generar { background-color: #28a745; }
-        .copiar { background-color: #007bff; }
-        .reiniciar { background-color: #dc3545; }
-        pre {
-            background: #000;
-            color: #0f0;
-            padding: 15px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reproductor</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0e0e0e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    #loader {
+      position: absolute;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .spinner {
+      border: 6px solid rgba(255, 255, 255, 0.1);
+      border-top: 6px solid #00bfff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 15px;
+    }
+
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
 
-    <h2>Generador de Canal (formato individual)</h2>
+  <div id="loader">
+    <div class="spinner"></div>
+    <p>Extrayendo el video...</p>
+  </div>
 
-    <div class="form-group">
-        <label for="name">Nombre del canal:</label>
-        <input type="text" id="name" value="SPACE">
-    </div>
+  <iframe id="videoFrame" allowfullscreen></iframe>
 
-    <div class="form-group">
-        <label for="category">Categoría (una o varias separadas por coma):</label>
-        <input type="text" id="category" value="cine">
-    </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get("url");
 
-    <div class="form-group">
-        <label for="logo">URL del logo:</label>
-        <input type="text" id="logo" value="https://logos-world.net/wp-content/uploads/2023/03/Space-Logo.png">
-    </div>
+    const iframe = document.getElementById("videoFrame");
+    const loader = document.getElementById("loader");
 
-    <div class="form-group">
-        <label for="href">Enlace embed:</label>
-        <input type="text" id="href" value="https://embed.sdfgnksbounce.com/embed2/space.html">
-    </div>
-
-    <button class="generar" onclick="generarCanal()">Generar</button>
-    <button class="copiar" onclick="copiar()">Copiar</button>
-    <button class="reiniciar" onclick="reiniciar()">Reiniciar ID</button>
-
-    <pre id="resultado"></pre>
-
-    <script>
-        let idActual = 1;
-
-        function generarCanal() {
-            const name = document.getElementById("name").value.trim();
-            const category = document.getElementById("category").value.split(",").map(c => c.trim());
-            const logo = document.getElementById("logo").value.trim();
-            const href = document.getElementById("href").value.trim();
-
-            if (!name || !logo || !href || category.length === 0) {
-                alert("Por favor completa todos los campos.");
-                return;
-            }
-
-            const canal = {
-                id: idActual++,
-                name,
-                category,
-                logo,
-                href
-            };
-
-            const canalTexto = JSON.stringify(canal, null, 4) + ",";
-            document.getElementById("resultado").textContent = canalTexto;
-
-            document.getElementById("name").focus();
-        }
-
-        function copiar() {
-            const texto = document.getElementById("resultado").textContent;
-            navigator.clipboard.writeText(texto).then(() => {
-                alert("Copiado al portapapeles ✅");
-            });
-        }
-
-        function reiniciar() {
-            if (confirm("¿Reiniciar ID a 1?")) {
-                idActual = 1;
-                document.getElementById("resultado").textContent = "";
-            }
-        }
-    </script>
+    if (url) {
+      iframe.src = url;
+      iframe.onload = () => {
+        // Puedes ocultar el loader si quieres después de cierta condición
+        // Por ahora lo dejamos como infinito
+        // loader.style.display = "none";
+      };
+    } else {
+      loader.innerHTML = "<p style='color:red;'>❌ No se proporcionó un enlace válido</p>";
+    }
+  </script>
 
 </body>
 </html>
