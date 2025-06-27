@@ -2,51 +2,42 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Reproductor</title>
+  <title>Procesando video...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
-      background-color: #0d0d0d;
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    #container {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    #loading {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, #121212, #1c1c1c);
+      background: #0a0a0a;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      color: #ffffffcc;
-      z-index: 2;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
     }
 
-    .dot-spinner {
-      width: 64px;
-      height: 64px;
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255, 255, 255, 0.1);
+      border-top: 6px solid #00bfff;
       border-radius: 50%;
-      border: 6px solid transparent;
-      border-top-color: #00bfff;
       animation: spin 1s linear infinite;
     }
 
-    #videoFrame {
-      width: 100%;
-      height: 100%;
+    #status {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 16px;
+      color: #cccccc;
+    }
+
+    iframe {
+      display: none; /* El iframe no es visible */
+      width: 0;
+      height: 0;
       border: none;
-      display: none;
     }
 
     @keyframes spin {
@@ -55,34 +46,34 @@
   </style>
 </head>
 <body>
-  <div id="container">
-    <div id="loading">
-      <div class="dot-spinner"></div>
-      <p style="margin-top: 16px; font-size: 16px;">Cargando transmisión en vivo...</p>
-    </div>
-    <iframe id="videoFrame" allowfullscreen></iframe>
+
+  <div>
+    <div class="spinner"></div>
+    <div id="status">Extrayendo video en vivo...</div>
   </div>
 
-  <script>
-    // Ocultar el parámetro real y cargarlo internamente
-    const params = new URLSearchParams(window.location.search);
-    const encoded = params.get("data");
+  <iframe id="embedFrame"></iframe>
 
-    if (encoded) {
-      try {
-        const decodedUrl = atob(encoded); // Decodifica base64
-        const iframe = document.getElementById('videoFrame');
-        iframe.src = decodedUrl;
-        iframe.onload = () => {
-          // Mostrar el iframe después de cargar
-          iframe.style.display = "block";
-        };
-      } catch (e) {
-        document.getElementById('loading').innerHTML = "<p style='color:red;'>❌ Enlace inválido</p>";
-      }
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get("url");
+
+    if (url) {
+      const iframe = document.getElementById("embedFrame");
+      iframe.src = url;
+
+      // Aquí puedes agregar lógica para extraer el video
+      // Ej: comunicar con WebView/Android para interceptar la red
+      // o usar ServiceWorker en apps web
+
+      iframe.onload = () => {
+        document.getElementById("status").textContent = "Procesando transmisión...";
+        // Aquí podrías analizar contenido, scripts, esperar a capturar .m3u8, etc.
+      };
     } else {
-      document.getElementById('loading').innerHTML = "<p style='color:red;'>❌ No se proporcionó enlace</p>";
+      document.getElementById("status").textContent = "❌ Enlace no válido.";
     }
   </script>
+
 </body>
 </html>
