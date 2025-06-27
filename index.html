@@ -2,84 +2,87 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reproductor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body {
+    html, body {
       margin: 0;
-      background-color: #0e0e0e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      background-color: #0d0d0d;
+      height: 100%;
       overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
     }
 
-    #loader {
+    #container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    #loading {
       position: absolute;
-      z-index: 999;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #121212, #1c1c1c);
       display: flex;
       flex-direction: column;
       align-items: center;
-      color: #fff;
-      animation: fadeIn 1s ease-in-out;
+      justify-content: center;
+      color: #ffffffcc;
+      z-index: 2;
     }
 
-    .spinner {
-      border: 6px solid rgba(255, 255, 255, 0.1);
-      border-top: 6px solid #00bfff;
+    .dot-spinner {
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      width: 60px;
-      height: 60px;
+      border: 6px solid transparent;
+      border-top-color: #00bfff;
       animation: spin 1s linear infinite;
-      margin-bottom: 15px;
     }
 
-    iframe {
-      width: 100vw;
-      height: 100vh;
+    #videoFrame {
+      width: 100%;
+      height: 100%;
       border: none;
+      display: none;
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-
-  <div id="loader">
-    <div class="spinner"></div>
-    <p>Extrayendo el video...</p>
+  <div id="container">
+    <div id="loading">
+      <div class="dot-spinner"></div>
+      <p style="margin-top: 16px; font-size: 16px;">Cargando transmisión en vivo...</p>
+    </div>
+    <iframe id="videoFrame" allowfullscreen></iframe>
   </div>
 
-  <iframe id="videoFrame" allowfullscreen></iframe>
-
   <script>
+    // Ocultar el parámetro real y cargarlo internamente
     const params = new URLSearchParams(window.location.search);
-    const url = params.get("url");
+    const encoded = params.get("data");
 
-    const iframe = document.getElementById("videoFrame");
-    const loader = document.getElementById("loader");
-
-    if (url) {
-      iframe.src = url;
-      iframe.onload = () => {
-        // Puedes ocultar el loader si quieres después de cierta condición
-        // Por ahora lo dejamos como infinito
-        // loader.style.display = "none";
-      };
+    if (encoded) {
+      try {
+        const decodedUrl = atob(encoded); // Decodifica base64
+        const iframe = document.getElementById('videoFrame');
+        iframe.src = decodedUrl;
+        iframe.onload = () => {
+          // Mostrar el iframe después de cargar
+          iframe.style.display = "block";
+        };
+      } catch (e) {
+        document.getElementById('loading').innerHTML = "<p style='color:red;'>❌ Enlace inválido</p>";
+      }
     } else {
-      loader.innerHTML = "<p style='color:red;'>❌ No se proporcionó un enlace válido</p>";
+      document.getElementById('loading').innerHTML = "<p style='color:red;'>❌ No se proporcionó enlace</p>";
     }
   </script>
-
 </body>
 </html>
