@@ -2,72 +2,78 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Iniciando transmisión...</title>
+  <title>Conectando a la señal...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --bg: #0c0c0c;
-      --accent: #1db954;
-      --text: #e0e0e0;
-    }
-
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0a0a, #121212);
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
     }
 
-    html, body {
+    .backdrop {
+      position: absolute;
       width: 100%;
       height: 100%;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at center, #1b1b1b 0%, #000 100%);
+      z-index: 0;
+      animation: pulse 4s infinite ease-in-out;
     }
 
-    .loader-box {
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
 
-    .title {
-      font-size: 1.4rem;
-      color: var(--text);
-      margin-bottom: 10px;
-    }
-
-    .progress-bar {
-      width: 200px;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      overflow: hidden;
+    .content {
       position: relative;
-      margin: 0 auto;
+      z-index: 2;
+      text-align: center;
+      animation: fadeIn 1s ease-out;
     }
 
-    .progress-bar::before {
-      content: "";
-      position: absolute;
-      height: 100%;
-      width: 60px;
-      background: var(--accent);
-      animation: slide 1.5s infinite ease-in-out;
+    .content h1 {
+      font-size: 1.7rem;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      font-weight: 600;
     }
 
-    @keyframes slide {
-      0%   { left: -60px; opacity: 0; }
-      50%  { left: 80px; opacity: 1; }
-      100% { left: 200px; opacity: 0; }
+    .content p {
+      font-size: 1rem;
+      color: #bbbbbb;
+      margin-bottom: 20px;
     }
 
-    .message {
-      color: #999;
-      font-size: 0.95rem;
-      margin-top: 15px;
+    .signal-bar {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .bar {
+      width: 4px;
+      height: 20px;
+      background: #1db954;
+      border-radius: 2px;
+      animation: bounce 1s infinite ease-in-out;
+    }
+
+    .bar:nth-child(2) { animation-delay: 0.1s; }
+    .bar:nth-child(3) { animation-delay: 0.2s; }
+    .bar:nth-child(4) { animation-delay: 0.3s; }
+    .bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: scaleY(0.4); }
+      50% { transform: scaleY(1); }
     }
 
     iframe {
@@ -79,16 +85,24 @@
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <div class="loader-box">
-    <div class="title">Conectando a la transmisión</div>
-    <div class="progress-bar"></div>
-    <div class="message">Por favor, espera unos segundos...</div>
+  <div class="backdrop"></div>
+
+  <div class="content">
+    <h1>Conectando a la transmisión en vivo</h1>
+    <p>Preparando señal segura...</p>
+    <div class="signal-bar">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
   </div>
 
   <iframe id="embedFrame"></iframe>
@@ -100,8 +114,8 @@
     if (url) {
       iframe.src = url;
     } else {
-      document.querySelector(".title").textContent = "⚠️ Enlace no válido";
-      document.querySelector(".message").textContent = "No se encontró el parámetro ?url=";
+      document.querySelector("h1").textContent = "⚠️ Enlace no válido";
+      document.querySelector("p").textContent = "Falta el parámetro ?url=";
     }
   </script>
 
