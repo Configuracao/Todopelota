@@ -6,52 +6,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --bg-color: #090909;
-      --primary: #1db954;
-      --text-light: #eeeeee;
-      --text-muted: #aaaaaa;
+      --bg: #0c0c0c;
+      --accent: #1db954;
+      --text: #e0e0e0;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Roboto, sans-serif;
     }
 
     html, body {
-      background: var(--bg-color);
+      width: 100%;
       height: 100%;
-      overflow: hidden;
+      background: var(--bg);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      font-family: 'Segoe UI', sans-serif;
     }
 
-    .container {
+    .loader-box {
       text-align: center;
-      animation: fadeIn 1s ease-out;
-    }
-
-    .loader-ring {
-      width: 64px;
-      height: 64px;
-      border: 5px solid rgba(255, 255, 255, 0.1);
-      border-top: 5px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .title {
-      font-size: 1.3rem;
-      color: var(--text-light);
-      margin-bottom: 6px;
+      font-size: 1.4rem;
+      color: var(--text);
+      margin-bottom: 10px;
     }
 
-    .subtitle {
+    .progress-bar {
+      width: 200px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+      margin: 0 auto;
+    }
+
+    .progress-bar::before {
+      content: "";
+      position: absolute;
+      height: 100%;
+      width: 60px;
+      background: var(--accent);
+      animation: slide 1.5s infinite ease-in-out;
+    }
+
+    @keyframes slide {
+      0%   { left: -60px; opacity: 0; }
+      50%  { left: 80px; opacity: 1; }
+      100% { left: 200px; opacity: 0; }
+    }
+
+    .message {
+      color: #999;
       font-size: 0.95rem;
-      color: var(--text-muted);
+      margin-top: 15px;
     }
 
     iframe {
@@ -61,27 +77,18 @@
       border: none;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (min-width: 768px) {
-      .title { font-size: 1.6rem; }
-      .subtitle { font-size: 1.1rem; }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="loader-ring"></div>
-    <div class="title">Cargando transmisión en vivo</div>
-    <div class="subtitle">Por favor, espera unos segundos...</div>
+  <div class="loader-box">
+    <div class="title">Conectando a la transmisión</div>
+    <div class="progress-bar"></div>
+    <div class="message">Por favor, espera unos segundos...</div>
   </div>
 
   <iframe id="embedFrame"></iframe>
@@ -92,12 +99,9 @@
 
     if (url) {
       iframe.src = url;
-      iframe.onload = () => {
-        document.querySelector('.subtitle').textContent = "Procesando señal...";
-      };
     } else {
-      document.querySelector('.title').textContent = "⚠️ Enlace no encontrado";
-      document.querySelector('.subtitle').textContent = "Verifica el parámetro ?url=";
+      document.querySelector(".title").textContent = "⚠️ Enlace no válido";
+      document.querySelector(".message").textContent = "No se encontró el parámetro ?url=";
     }
   </script>
 
