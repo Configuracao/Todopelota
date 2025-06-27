@@ -1,55 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Transmisión en vivo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Iniciando transmisión...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     :root {
-      --bg-color: #0e0f12;
-      --accent-color: #1db954;
-      --text-color: #ffffffd9;
+      --bg-color: #090909;
+      --primary: #1db954;
+      --text-light: #eeeeee;
+      --text-muted: #aaaaaa;
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, sans-serif;
     }
 
-    body, html {
+    html, body {
+      background: var(--bg-color);
       height: 100%;
-      background-color: var(--bg-color);
-      font-family: 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
     }
 
-    .loader-container {
+    .container {
       text-align: center;
-      animation: fadeIn 0.8s ease-in-out;
+      animation: fadeIn 1s ease-out;
     }
 
     .loader-ring {
-      width: 70px;
-      height: 70px;
+      width: 64px;
+      height: 64px;
       border: 5px solid rgba(255, 255, 255, 0.1);
-      border-top: 5px solid var(--accent-color);
+      border-top: 5px solid var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto 20px;
     }
 
-    .loader-text {
-      font-size: 17px;
-      color: var(--text-color);
-      letter-spacing: 0.5px;
+    .title {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
     }
 
     iframe {
-      display: none; /* oculto completamente */
+      display: none;
       width: 0;
       height: 0;
       border: none;
@@ -60,29 +66,38 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (min-width: 768px) {
+      .title { font-size: 1.6rem; }
+      .subtitle { font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
 
-  <div class="loader-container">
+  <div class="container">
     <div class="loader-ring"></div>
-    <div class="loader-text">Cargando transmisión segura...</div>
+    <div class="title">Cargando transmisión en vivo</div>
+    <div class="subtitle">Por favor, espera unos segundos...</div>
   </div>
 
   <iframe id="embedFrame"></iframe>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const embed = params.get("url");
+    const url = new URLSearchParams(window.location.search).get("url");
+    const iframe = document.getElementById("embedFrame");
 
-    if (embed) {
-      document.getElementById("embedFrame").src = embed;
-      // Puedes aquí luego comunicarte con Android o usar ServiceWorker si es web
+    if (url) {
+      iframe.src = url;
+      iframe.onload = () => {
+        document.querySelector('.subtitle').textContent = "Procesando señal...";
+      };
     } else {
-      document.querySelector(".loader-text").textContent = "❌ Enlace no proporcionado";
+      document.querySelector('.title').textContent = "⚠️ Enlace no encontrado";
+      document.querySelector('.subtitle').textContent = "Verifica el parámetro ?url=";
     }
   </script>
 
