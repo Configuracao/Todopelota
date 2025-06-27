@@ -1,40 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Procesando video...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>Transmisión en vivo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body {
+    :root {
+      --bg-color: #0e0f12;
+      --accent-color: #1db954;
+      --text-color: #ffffffd9;
+    }
+
+    * {
       margin: 0;
       padding: 0;
-      background: #0a0a0a;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: 'Segoe UI', sans-serif;
-      color: white;
+      box-sizing: border-box;
     }
 
-    .spinner {
-      width: 60px;
-      height: 60px;
-      border: 6px solid rgba(255, 255, 255, 0.1);
-      border-top: 6px solid #00bfff;
+    body, html {
+      height: 100%;
+      background-color: var(--bg-color);
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .loader-container {
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .loader-ring {
+      width: 70px;
+      height: 70px;
+      border: 5px solid rgba(255, 255, 255, 0.1);
+      border-top: 5px solid var(--accent-color);
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
     }
 
-    #status {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 16px;
-      color: #cccccc;
+    .loader-text {
+      font-size: 17px;
+      color: var(--text-color);
+      letter-spacing: 0.5px;
     }
 
     iframe {
-      display: none; /* El iframe no es visible */
+      display: none; /* oculto completamente */
       width: 0;
       height: 0;
       border: none;
@@ -43,35 +58,31 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
 
-  <div>
-    <div class="spinner"></div>
-    <div id="status">Extrayendo video en vivo...</div>
+  <div class="loader-container">
+    <div class="loader-ring"></div>
+    <div class="loader-text">Cargando transmisión segura...</div>
   </div>
 
   <iframe id="embedFrame"></iframe>
 
   <script>
     const params = new URLSearchParams(window.location.search);
-    const url = params.get("url");
+    const embed = params.get("url");
 
-    if (url) {
-      const iframe = document.getElementById("embedFrame");
-      iframe.src = url;
-
-      // Aquí puedes agregar lógica para extraer el video
-      // Ej: comunicar con WebView/Android para interceptar la red
-      // o usar ServiceWorker en apps web
-
-      iframe.onload = () => {
-        document.getElementById("status").textContent = "Procesando transmisión...";
-        // Aquí podrías analizar contenido, scripts, esperar a capturar .m3u8, etc.
-      };
+    if (embed) {
+      document.getElementById("embedFrame").src = embed;
+      // Puedes aquí luego comunicarte con Android o usar ServiceWorker si es web
     } else {
-      document.getElementById("status").textContent = "❌ Enlace no válido.";
+      document.querySelector(".loader-text").textContent = "❌ Enlace no proporcionado";
     }
   </script>
 
