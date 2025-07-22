@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>GOLPERU en vivo por Internet | Futbol Libre TV</title>
+  <meta name="description"
+    content="GOLPERU en vivo por internet online, el canal exclusivo de Movistar TV con transmisiones 24/7 del fútbol peruano. Liga 1, Liga 2, programas deportivos y contenido exclusivo en HD.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://futbollibreonline.org/en-vivo/golperu">
+  <meta name="author" content="Futbol Free TV">
+  <link rel="icon" type="image" href="/img/logo-futbol-libre.png">
+  <meta property="og:locale" content="es">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="GOLPERU en vivo por Internet | Futbol Libre TV">
+  <meta property="og:description"
+    content="GOLPERU en vivo por internet online, el canal exclusivo de Movistar TV con transmisiones 24/7 del fútbol peruano. Liga 1, Liga 2, programas deportivos y contenido exclusivo en HD.">
+  <meta property="og:url" content="https://futbollibreonline.org/en-vivo/golperu">
+  <meta property="og:site_name" content="Futbol Free TV">
+  <meta property="og:image" content="../img/logo-canal/gol_peru.webp">
+  <link rel="stylesheet" href="../css/canal.css?v=1.2">
+  
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "BroadcastEvent",
+      "name": "GOLPERU en vivo",
+      "isLiveBroadcast": true,
+      "broadcaster": {
+        "@type": "Organization",
+        "name": "Fútbollibre"
+      }
+    }
+  </script>
+
+  <!-- JQUERY-->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" defer></script>
+  <!-- LUXON -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.4.4/luxon.min.js" defer></script>
+  <!-- CUSTOM JS-->
+  <script src="../js/canal.js?v=1.2" defer></script>
+</head>
+<body>
+  <header>
+    <a href="/" class="title-header">Futbol Free</a>
+    <div></div>
+    <div class="prelogo">
+      <a href="/" class="logodef">
+        <img src="/img/logo-futbolLibre.webp" alt="Logo Futbol Free TV - Volver al inicio" class="logo2">
+      </a>
+    </div>
+  </header>
+
+  <main class="main-frame">
+    <div class="centerfull">
+      <h1 class="title">GOLPERU en vivo por Internet</h1>
+    </div>
+
+    <div class="subiframe">
+      <div class="preframe">
+        <iframe allowfullscreen="true" 
+                scrolling="no" 
+                src="https://tiogol.com/vivo/canal.php?stream=golperu"
+                allow="encrypted-media" 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                id="embedIframe"
+                loading="lazy">
+        </iframe>
+      </div>
+      <div class="centerfull">
+        <button id="btnIframe">
+          Recargar Pagina
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    <span class="footer-title">
+      Futbol Free TV 2025
+    </span>
+    <ul class="redes">
+      <li><a href="#" class="red-item">Telegram</a></li>
+      <li><a href="#" class="red-item">Facebook</a></li>
+    </ul>
+  </footer>
+</body>
+</html>
